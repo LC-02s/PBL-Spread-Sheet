@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PBL: Spread Sheet</title>
+    <link rel="icon" href="./favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <main class="area-main">
+        <section class="formular-bar">
+            <p class="formular-bar__inputContainer">
+                <input id="cellStatus" class="formular-bar__inputCellStatus" type="text" value="A1">
+                <input id="cellContent" class="formular-bar__inputCellContent" type="text" placeholder="f(x)">
+            </p>
+            <div class="formular-bar__btnContainer">
+                <button id="resetBtn" class="formular-bar__btn formular-bar__btn--reset">
+                    <span class="material-icons">restart_alt</span> Reset
+                </button>
+                <button id="exportBtn" class="formular-bar__btn formular-bar__btn--export">
+                    <span class="material-icons">exit_to_app</span> Export
+                </button>
+            </div>
+        </section>
+        <section class="spread-sheet">
+            <div id="columnHeader" class="spread-sheet__columnHeader"></div>
+            <div class="spread-sheet__cellContainer">
+                <div id="rowHeader" class="spread-sheet__rowHeader"></div>
+                <div id="sheetContainer" class="spread-sheet__cellWrap"></div>
+            </div>
+        </section>
+    </main>
+    <!-- define script -->
+    <script type="module" src="./script.js"></script>
+    <!-- define script -->
+</body>
+</html>
