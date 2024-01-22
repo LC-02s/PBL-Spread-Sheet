@@ -8,6 +8,7 @@ const exportBtnEl = document.getElementById('exportBtn');
 const rowHeaderEl = document.getElementById('rowHeader');
 const columnHeaderEl = document.getElementById('columnHeader');
 const sheetContainerEl = document.getElementById('sheetContainer');
+const sheetScrollEl = document.querySelector('.spread-sheet');
 
 const defaultRows = 50;
 const defaultCols = 40;
@@ -172,4 +173,10 @@ exportBtnEl.addEventListener('click', () => {
     anchorEl.href = csvUrl;
     anchorEl.download = 'PBL04_SpreadSheet.csv';
     anchorEl.click();
+});
+
+// 가로 스크롤 이벤트
+sheetScrollEl.addEventListener('scroll', (e) => {
+    const { left } = sheetContainerEl?.getBoundingClientRect();
+    rowHeaderEl.style.left = Math.abs(left - 59) + "px";
 });
