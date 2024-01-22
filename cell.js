@@ -5,7 +5,5 @@ export default class Cell {
         this.column = column;
         this.cellName = columnName + rowName;
         this.coordinate = [this.row, this.column];
-        this.disabled = disabled;
-        this.active = active;
     }
 }
