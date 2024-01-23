@@ -25,6 +25,11 @@ const spreadSheet = new Array(defaultRows).fill()
     );
 let lastCell = [1, 1];
 
+// row, column 값으로 셀 요소를 반환해주는 함수
+function getCellEl(row, column) {
+    return document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column}"]`);
+}
+
 // 기본 셀 이벤트 모음 객체
 const basicEvent = {
     eventTypingInput(inputEl) {
@@ -38,22 +43,22 @@ const basicEvent = {
         const [ row, column ] = lastCell;
         if (!keyState && e.key == 'ArrowUp') {
             if (row == 1) return false;
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row - 1}-${column}"]`);
+            const targetCell = getCellEl(row - 1, column);
             targetCell.firstChild.focus();
             selectCell(targetCell);
         } else if (!keyState && e.key == 'ArrowDown') {
             if (row == spreadSheet.length) return false;
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row + 1}-${column}"]`);
+            const targetCell = getCellEl(row + 1, column);
             targetCell.firstChild.focus();
             selectCell(targetCell);
         } else if (!keyState && e.key == 'ArrowLeft') {
             if (column == 1) return false;
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column - 1}"]`);
+            const targetCell = getCellEl(row, column - 1);
             targetCell.firstChild.focus();
             selectCell(targetCell);
         } else if (!keyState && e.key == 'ArrowRight') {
             if (column == spreadSheet[0].length) return false;
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column + 1}"]`);
+            const targetCell = getCellEl(row, column + 1);
             targetCell.firstChild.focus();
             selectCell(targetCell);
         }
@@ -62,7 +67,7 @@ const basicEvent = {
     activeCellFocus(e) {
         if (e.key == 'Enter') {
             const [ row, column ] = lastCell;
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column}"] > input`);
+            const targetCell = getCellEl(row, column)?.querySelector('input');
             targetCell.focus();
         }
     },
@@ -88,30 +93,38 @@ function loadSheet() {
 }
 loadSheet();
 
+const colElHighlightClass = 'spread-sheet__colHeaderCell--highlight';
+const rowElHighlightClass = 'spread-sheet__rowHeaderCell--highlight';
+const cellElHighlightClass = 'spread-sheet__cell--highlight';
+
 // 기본 하이라이트 설정
-document.querySelector('.spread-sheet__cell').classList.add('spread-sheet__cell--highlight');
-document.querySelector('.spread-sheet__colHeaderCell').classList.add('spread-sheet__colHeaderCell--highlight');
-document.querySelector('.spread-sheet__rowHeaderCell').classList.add('spread-sheet__rowHeaderCell--highlight');
+document.querySelector('.spread-sheet__cell').classList.add(cellElHighlightClass);
+document.querySelector('.spread-sheet__colHeaderCell').classList.add(colElHighlightClass);
+document.querySelector('.spread-sheet__rowHeaderCell').classList.add(rowElHighlightClass);
 
 // 셀 선택 이벤트 (셀 이벤트 및 셀 이름 인풋 요소 접근)
 function selectCell(cellEl) {
+    const getColHeaderEl = (column) => document.getElementById(`colHeader_${column}`);
+    const getRowHeaderEl = (row) => document.getElementById(`rowHeader_${row}`);
+
     if (lastCell?.length) {
         const [ lastRow, lastColumn ] = lastCell;
-        const lastActiveCol = document.getElementById(`colHeader_${lastColumn}`);
-        const lastActiveRow = document.getElementById(`rowHeader_${lastRow}`);
-        const lastCellEl = document.querySelector(`.spread-sheet__cell[data-cell-index="${lastRow}-${lastColumn}"]`);
-        lastActiveCol?.classList.remove('spread-sheet__colHeaderCell--highlight');
-        lastActiveRow?.classList.remove('spread-sheet__rowHeaderCell--highlight');
-        lastCellEl?.classList.remove('spread-sheet__cell--highlight');
+        const lastActiveCol = getColHeaderEl(lastColumn);
+        const lastActiveRow = getRowHeaderEl(lastRow);
+        const lastCellEl = getCellEl(lastRow, lastColumn);
+        lastActiveCol?.classList.remove(colElHighlightClass);
+        lastActiveRow?.classList.remove(rowElHighlightClass);
+        lastCellEl?.classList.remove(cellElHighlightClass);
     }
+    
     const { cellName, cellIndex } = cellEl?.dataset;
     const [ row, column ] = cellIndex.split('-').map(Number);
-    const targetCol = document.getElementById(`colHeader_${column}`);
-    const targetRow = document.getElementById(`rowHeader_${row}`);
-    targetCol?.classList.add('spread-sheet__colHeaderCell--highlight');
-    targetRow?.classList.add('spread-sheet__rowHeaderCell--highlight');
+    const targetCol = getColHeaderEl(column);
+    const targetRow = getRowHeaderEl(row);;
+    targetCol?.classList.add(colElHighlightClass);
+    targetRow?.classList.add(rowElHighlightClass);
     
-    cellEl?.classList.add('spread-sheet__cell--highlight');
+    cellEl?.classList.add(cellElHighlightClass);
     cellStatusEl.value = cellName;
     cellContentEl.value = spreadSheet[row - 1][column - 1].data;
     lastCell = [ row, column ];
@@ -126,7 +139,7 @@ window.addEventListener('keydown', (e) => {
 cellStatusEl.addEventListener('keydown', (e) => {
     const [ row, column ] = lastCell;
     if (e.key == 'Escape') {
-        const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column}"]`);
+        const targetCell = getCellEl(row, column);
         cellStatusEl.blur();
         cellStatusEl.value = targetCell.dataset.cellName;
     } else if (e.key == 'Enter') {
@@ -134,10 +147,10 @@ cellStatusEl.addEventListener('keydown', (e) => {
         const alphabetsIndex = alphabets.indexOf(colName[0].toUpperCase());
         if (alphabetsIndex > -1 && Number(rowName) > 0) {
             const targetColumn = (alphabetsIndex + (colName.length - 1) * alphabets.length + 1);
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${rowName}-${targetColumn}"]`);
+            const targetCell = getCellEl(rowName, targetColumn);
             selectCell(targetCell);
         } else {
-            const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column}"]`);
+            const targetCell = getCellEl(row, column);
             cellStatusEl.blur();
             cellStatusEl.value = targetCell.dataset.cellName;
         };
@@ -147,7 +160,7 @@ cellStatusEl.addEventListener('keydown', (e) => {
 // 상단 셀 콘텐츠 인풋 이벤트
 cellContentEl.addEventListener('input', () => {
     const [ row, column ] = lastCell;
-    const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column}"] > input`);
+    const targetCell = getCellEl(row, column)?.querySelector('input');
     targetCell.setAttribute('value', cellContentEl.value);
     targetCell.value = cellContentEl.value;
     spreadSheet[row - 1][column - 1].data = cellContentEl.value;
