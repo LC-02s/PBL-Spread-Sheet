@@ -46,14 +46,12 @@ const basicEvent = {
             const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row + 1}-${column}"]`);
             targetCell.firstChild.focus();
             selectCell(targetCell);
-        }
-        else if (!keyState && e.key == 'ArrowLeft') {
+        } else if (!keyState && e.key == 'ArrowLeft') {
             if (column == 1) return false;
             const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column - 1}"]`);
             targetCell.firstChild.focus();
             selectCell(targetCell);
-        }
-        else if (!keyState && e.key == 'ArrowRight') {
+        } else if (!keyState && e.key == 'ArrowRight') {
             if (column == spreadSheet[0].length) return false;
             const targetCell = document.querySelector(`.spread-sheet__cell[data-cell-index="${row}-${column + 1}"]`);
             targetCell.firstChild.focus();
